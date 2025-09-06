@@ -1,6 +1,6 @@
 # Modern File Manager Demo
 
-This repository contains a **self-contained, interactive demo** of a modern file management system built with **HTML, CSS, JavaScript, and Filestack**. It demonstrates how to build a clean drag-and-drop uploader with cloud storage integration, real-time progress, previews, and search.
+This repository contains a interactive demo of a modern file uploader tool built with **HTML, CSS, JavaScript, and Filestack**. It demonstrates how to build a clean drag-and-drop uploader with cloud storage integration, real-time progress, previews, and search.
 
 ---
 
