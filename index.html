@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern File Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>File Management System</h1>
+
+      <!-- File Upload Area -->
+      <div id="upload-area" class="upload-zone">
+        <div class="upload-content">
+          <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24">
+            <path
+              d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+            />
+          </svg>
+          <h3>Drop files here or click to browse</h3>
+          <p>Support for images, documents, and videos up to 100MB</p>
+          <input type="file" id="file-input" multiple hidden />
+        </div>
+      </div>
+
+      <!-- Upload Progress -->
+      <div id="upload-progress" class="progress-container hidden">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <span class="progress-text">Uploading... 0%</span>
+      </div>
+
+      <!-- File List -->
+      <div id="file-list" class="file-grid">
+        <!-- Files will be displayed here -->
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
