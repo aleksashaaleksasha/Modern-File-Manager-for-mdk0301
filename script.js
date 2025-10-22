@@ -1,6 +1,6 @@
-class FileManager {
+ class FileManager {
   constructor() {
-    // Reference DOM elements for file upload
+    // референсы DOM элементов для загрузки файлов
     this.uploadArea = document.getElementById("upload-area");
     this.fileInput = document.getElementById("file-input");
     this.progressContainer = document.getElementById("upload-progress");
@@ -8,34 +8,34 @@ class FileManager {
     this.progressText = document.querySelector(".progress-text");
     this.fileList = document.getElementById("file-list");
 
-    this.files = []; // Store uploaded files
-    this.initializeEventListeners(); // Set up event handlers
+    this.files = []; // здесь хранятся файлы, которые пользователь загрузит
+    this.initializeEventListeners(); // инициализирует обработчики событий
   }
 
   initializeEventListeners() {
-    // Open file dialog when user clicks the upload area
+    // открывает диалог с файлами когда пользователь нажимает на область загрузки
     this.uploadArea.addEventListener("click", () => {
       this.fileInput.click();
     });
 
-    // Handle file selection from the input
+    // обработка выбранных файлов, которые выбраны в диалоге с файлами
     this.fileInput.addEventListener("change", (e) => {
       this.handleFiles(e.target.files);
     });
 
-    // Drag over the area – highlight the drop zone
+    // если пользователь переносит файлы, то область загрузки подсвечивается
     this.uploadArea.addEventListener("dragover", (e) => {
       e.preventDefault();
       this.uploadArea.classList.add("dragover");
     });
 
-    // Remove highlight when dragging leaves
+    // убирает подсвечивание области загрзуки
     this.uploadArea.addEventListener("dragleave", (e) => {
       e.preventDefault();
       this.uploadArea.classList.remove("dragover");
     });
 
-    // Handle files dropped onto the area
+    // обработка выбранных файлов, но уже тех которые перенесли
     this.uploadArea.addEventListener("drop", (e) => {
       e.preventDefault();
       this.uploadArea.classList.remove("dragover");
@@ -45,7 +45,7 @@ class FileManager {
 
   handleFiles(fileList) {
     const validFiles = Array.from(fileList).filter((file) => {
-      // Reject files larger than 100MB
+      // не принимает файлы больше чем 100 МБ
       if (file.size > 100 * 1024 * 1024) {
         alert(`${file.name} is too large. Maximum size is 100MB.`);
         return false;
@@ -58,7 +58,10 @@ class FileManager {
     }
   }
 
+  // загружает файлы по очереди и показывает прогресс
   async uploadFiles(files) {
+
+    // показ прогресса
     this.showProgress();
 
     for (let i = 0; i < files.length; i++) {
@@ -66,9 +69,11 @@ class FileManager {
       await this.uploadSingleFile(file, i + 1, files.length);
     }
 
+    //скрыть прогресс
     this.hideProgress();
   }
 
+  // загрузка отдельного файла
   async uploadSingleFile(file, current, total) {
     return new Promise((resolve) => {
       let progress = 0;
@@ -78,7 +83,7 @@ class FileManager {
           progress = 100;
           clearInterval(interval);
 
-          // Add file to list once upload is done
+          // добавляет DOM карточку файла в список и сохраняет в this.files
           this.addFileToList(file);
           resolve();
         }
@@ -93,6 +98,7 @@ class FileManager {
     });
   }
 
+   // добавляет DOM карточку файла в список и сохраняет в this.files
   addFileToList(file) {
     const fileCard = document.createElement("div");
     fileCard.className = "file-card";
@@ -117,12 +123,14 @@ class FileManager {
     this.files.push(file);
   }
 
+   // удаляет файл из массива и обновляет интерфейс
   deleteFile(fileName) {
     this.files = this.files.filter((f) => f.name !== fileName);
     this.fileList.innerHTML = "";
     this.files.forEach((f) => this.addFileToList(f));
   }
 
+  // возвращает икноку в зависимости от типа файла
   getFileIcon(mimeType) {
     if (mimeType.startsWith("image/")) return "🖼️";
     if (mimeType.startsWith("video/")) return "🎥";
@@ -134,6 +142,8 @@ class FileManager {
     return "📁";
   }
 
+
+   // преобразует байты в читаемый формат ["Bytes", "KB", "MB", "GB"]
   formatFileSize(bytes) {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -142,10 +152,12 @@ class FileManager {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   }
 
+  // показывает прогресс
   showProgress() {
     this.progressContainer.classList.remove("hidden");
   }
 
+  //после задержки скрывает прогресс
   hideProgress() {
     setTimeout(() => {
       this.progressContainer.classList.add("hidden");
@@ -159,30 +171,32 @@ class FileManager {
   }
 }
 
-// Extend the basic FileManager class to add cloud storage functionality using Filestack
+// наследует класс FileManager и добавляет интеграцию в Filestack для облачного хранилища
 class EnhancedFileManager extends FileManager {
   constructor() {
-    super(); // Call the parent class constructor
-    this.client = filestack.init("YOUR_API_KEY"); // Initialize Filestack with your API key
-    this.picker = null; // Placeholder for the Filestack picker instance
-    this.implementSearch();
+    super();
+    this.client = filestack.init("YOUR_API_KEY"); // ключ API Filestack вставить нужно
+    this.picker = null;
+    this.implementSearch(); // добавляет поле поиска над зоной загрузки и фильтрует карточки
   }
 
+  // инициализирует обработчики событий
   initializeEventListeners() {
-    super.initializeEventListeners(); // Set up existing file selection and drag-drop listeners
+    super.initializeEventListeners();
 
-    // Add a new button for accessing cloud storage through Filestack
+    // добавляется новая кнопка для получения доступа к облачному хранилищу Filestack
     this.addFilestackButton();
   }
 
+  // создает кнопку для открытия Filestack
   addFilestackButton() {
     const button = document.createElement("button");
-    button.textContent = "Browse Cloud Storage"; // Button label
-    button.className = "filestack-btn"; // Apply styling
+    button.textContent = "Browse Cloud Storage"; // название кнопки
+    button.className = "filestack-btn"; // стиль для кнопки
 
-    // Open the Filestack picker when the button is clicked
+    // открывает Filestack при нажатии на кнопку
     button.onclick = (e) => {
-      e.stopPropagation(); // Prevent triggering other events
+      e.stopPropagation(); // делает так, чтобы другие события не вызывались
       this.openFilestack();
     };
 
@@ -190,26 +204,27 @@ class EnhancedFileManager extends FileManager {
     this.uploadArea.appendChild(button);
   }
 
+  //открывает Filestack
   openFilestack() {
     const options = {
-      accept: ["image/*", "video/*", "application/pdf", ".doc", ".docx"], // Allowed file types
-      maxFiles: 10, // Limit number of files selectable at once
-      uploadInBackground: false, // Upload immediately instead of in background
+      accept: ["image/*", "video/*", "application/pdf", ".doc", ".docx"], // допустимые типы файлов
+      maxFiles: 10, // лимит файлов
+      uploadInBackground: false, // загружает сразу
       onUploadDone: (result) => {
-        // Add each uploaded file to the file list
+        // добавление файлов в лист после загрузки
         result.filesUploaded.forEach((file) => {
           this.addCloudFileToList(file);
         });
       },
     };
 
-    // Open the Filestack file picker with the above options
+    // открывает Filestack picker с настройками выше
     this.client.picker(options).open();
   }
 
   addCloudFileToList(file) {
     const fileCard = document.createElement("div");
-    fileCard.className = "file-card cloud-file"; // Styling for cloud files
+    fileCard.className = "file-card cloud-file"; // стиль
     const preview = this.generatePreview(file);
 
     fileCard.innerHTML = `
@@ -229,12 +244,12 @@ class EnhancedFileManager extends FileManager {
             </div>
         `;
 
-    this.fileList.appendChild(fileCard); // Add to the file list
+    this.fileList.appendChild(fileCard); // добавление файла в лист
   }
 
   async uploadSingleFile(file, current, total) {
     try {
-      // Upload file using Filestack and track progress
+      // загрузить файл используя Filestack и показывает прогресс
       const fileHandle = await this.client.upload(file, {
         onProgress: (evt) => {
           const progress = (evt.loaded / evt.total) * 100;
@@ -247,7 +262,7 @@ class EnhancedFileManager extends FileManager {
         },
       });
 
-      // Once uploaded, add the file to the list view
+      // после загрузки добавляет в лист этот файл
       this.addCloudFileToList({
         filename: file.name,
         size: file.size,
@@ -259,6 +274,7 @@ class EnhancedFileManager extends FileManager {
     }
   }
 
+  // генерирует превью если может
   generatePreview(file) {
     if (file.mimetype && file.mimetype.startsWith("image/")) {
       return `<img src="${file.url}" alt="Preview" 
@@ -270,6 +286,7 @@ class EnhancedFileManager extends FileManager {
     return "";
   }
 
+  //добавляет поле поиска над зоной загрузки и фильтрует карточки
   implementSearch() {
     const searchInput = document.createElement("input");
     searchInput.type = "text";
@@ -294,5 +311,5 @@ class EnhancedFileManager extends FileManager {
   }
 }
 
-// Instantiate the EnhancedFileManager to replace the default FileManager functionality
+// инициализация EnhancedFileManager для замены обычного Filemanager
 const fileManager = new EnhancedFileManager();

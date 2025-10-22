@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Modern File Manager</title>
     <link rel="stylesheet" href="styles.css" />
+    <!-- подключение Filestack -->
     <script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"></script>
   </head>
   <body>
     <div class="container">
       <h1>File Management System</h1>
 
-      <!-- File Upload Area -->
+      <!-- область загрузки файлов -->
       <div id="upload-area" class="upload-zone">
         <div class="upload-content">
           <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24">
@@ -21,11 +22,12 @@
           </svg>
           <h3>Drop files here or click to browse</h3>
           <p>Support for images, documents, and videos up to 100MB</p>
+          <!-- обычный input спрятан и используется для открытия диалога выбора файлов -->
           <input type="file" id="file-input" multiple hidden />
         </div>
       </div>
 
-      <!-- Upload Progress -->
+      <!-- прогресс загрузки файла -->
       <div id="upload-progress" class="progress-container hidden">
         <div class="progress-bar">
           <div class="progress-fill"></div>
@@ -33,12 +35,13 @@
         <span class="progress-text">Uploading... 0%</span>
       </div>
 
-      <!-- File List -->
+      <!-- лист загруженных файлов -->
       <div id="file-list" class="file-grid">
-        <!-- Files will be displayed here -->
+        <!-- здесь будут загруженные файлы -->
       </div>
     </div>
 
+    <!-- главный скрипт приложения -->
     <script src="script.js"></script>
   </body>
 </html>
